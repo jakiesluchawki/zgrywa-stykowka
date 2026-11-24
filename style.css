@@ -9,3 +9,54 @@
 @media(max-width:490px){#grid{grid-template-columns:repeat(2,minmax(0,1fr))}#grid.fine{grid-template-columns:repeat(3,minmax(0,1fr))}.filename{font-size:10px}.search input{font-size:13px}.pick{width:32px;height:32px}.fine .caption{gap:2px}.fine .pick{width:24px;height:24px}.fine .filename{font-size:9px}.frame-no{font-size:23px}.fine .frame-no{font-size:19px}.chip{padding:2px 5px}.view-head>div{gap:8px}.arrows{gap:3px}.pick-wide{padding:9px}.mast-right{gap:4px}.mast-right .icon{width:13px}}
 
 #gallery-title:focus{outline:none}.photo.failed{position:relative}.photo.failed:not(:has(img[src])):after{content:'Otwórz podgląd';position:absolute;inset:0;display:grid;place-items:center;color:var(--quiet);font-size:12px}
+
+.common-panel {
+  border-block: 1px solid var(--line);
+  margin: 1px 0 6px;
+}
+.common-panel summary {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  padding: 9px 3px;
+  cursor: pointer;
+  list-style: none;
+}
+.common-panel summary::-webkit-details-marker { display: none; }
+.common-panel summary::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border: solid currentColor;
+  border-width: 0 1.5px 1.5px 0;
+  align-self: center;
+  transform: rotate(-45deg);
+}
+.common-panel[open] summary::before { transform: translateY(-2px) rotate(45deg); }
+.common-panel summary:focus-visible { outline: 2px solid var(--violet); outline-offset: -2px; }
+.common-panel summary strong { font-size: 14px; font-weight: 600; white-space: nowrap; }
+#common-summary { color: var(--quiet); font-size: 12px; }
+#common-form, #common-choices { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+#common-form { margin: 0 0 11px 18px; }
+.common-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  user-select: none;
+}
+.common-choice input { width: 14px; height: 14px; margin: 0; accent-color: var(--chip-ink); cursor: pointer; }
+.common-choice:has(:checked) { color: var(--chip-ink); background: var(--chip); border-color: var(--swatch); }
+.common-choice:hover { border-color: var(--swatch); }
+.common-clear { padding: 6px 8px; color: var(--quiet); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 760px) {
+  .common-panel summary { align-items: center; }
+  #common-summary { font-size: 11px; line-height: 1.2; }
+  #common-form { margin-left: 0; }
+  .common-choice { min-height: 32px; }
+}

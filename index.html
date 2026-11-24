@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#f6f4eb">
   <title>Stykówka — ZGRYWA</title>
   <link rel="icon" href="./zgrywa.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css">
-  <script src="./app.js" defer></script>
+  <link rel="stylesheet" href="./style.css?v=2">
+  <script src="./app.js?v=2" defer></script>
 </head>
 <body>
 <svg class="symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -57,13 +57,20 @@
   </section>
   <section class="tools" aria-label="Narzędzia stykówki">
     <div id="filters" role="group" aria-label="Filtruj według selekcji"></div>
+    <details id="common-panel" class="common-panel">
+      <summary><strong>Wspólne wybory</strong><span id="common-summary">Zdjęcia wybrane przez wszystkie zaznaczone osoby</span></summary>
+      <form id="common-form" aria-label="Wspólne wybory">
+        <div id="common-choices" role="group" aria-label="Porównaj selekcje"></div>
+        <button type="button" class="common-clear" id="common-clear" hidden>Wyczyść filtr</button>
+      </form>
+    </details>
     <div class="tool-row"><label class="search"><svg class="icon"><use href="#icon-search"/></svg><input type="search" id="search" aria-label="Szukaj po numerze lub nazwie" placeholder="Numer lub nazwa zdjęcia"></label>
       <span id="n-visible" role="status"></span>
       <div class="density" role="group" aria-label="Rozmiar miniaturek"><button id="coarse-btn" title="Większe miniatury" aria-label="Większe miniatury" aria-pressed="true"><svg class="icon"><use href="#icon-coarse"/></svg></button><button id="fine-btn" title="Mniejsze miniatury" aria-label="Mniejsze miniatury" aria-pressed="false"><svg class="icon"><use href="#icon-fine"/></svg></button></div>
     </div>
   </section>
   <section id="grid" aria-label="Zdjęcia"></section>
-  <div id="empty" hidden><h2>Brak zdjęć w tym widoku.</h2><p id="empty-hint"></p><button class="outline" id="reset">Pokaż wszystkie zdjęcia</button></div>
+  <div id="empty" hidden><h2 id="empty-title">Brak zdjęć w tym widoku.</h2><p id="empty-hint"></p><button class="outline" id="reset">Pokaż wszystkie zdjęcia</button></div>
   <footer><span>Fotografie · Tomek Albin</span><button id="top" class="plain">Na górę ↑</button></footer>
 </main>
 <dialog id="viewer" aria-labelledby="view-name">
