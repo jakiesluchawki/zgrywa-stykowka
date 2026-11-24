@@ -38,6 +38,7 @@
 .common-panel summary:focus-visible { outline: 2px solid var(--violet); outline-offset: -2px; }
 .common-panel summary strong { font-size: 14px; font-weight: 600; white-space: nowrap; }
 .common-panel summary span { color: var(--quiet); font-size: 12px; }
+#review-help { max-width: 86ch; margin: 0 0 10px 18px; font-size: 14px; line-height: 1.45; }
 .common-panel form, .common-panel [role="group"] { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
 .common-panel form { margin: 0 0 11px 18px; }
 .common-choice {
@@ -58,6 +59,9 @@
 @media (max-width: 760px) {
   .common-panel summary { align-items: center; }
   .common-panel summary span { font-size: 11px; line-height: 1.2; }
+  #exclude-panel summary { display: grid; grid-template-columns: 7px minmax(0, 1fr); gap: 4px 9px; }
+  #exclude-summary { grid-column: 2; }
+  #review-help { margin-left: 0; }
   .common-panel form { margin-left: 0; }
   .common-choice { min-height: 32px; }
 }

@@ -129,11 +129,16 @@ function buildFilters() {
     };
   }
 }
-function syncGroupPanel(panel, separator) {
+function reviewSummary(checked) {
+  const stages = {t1:'Tomek w pierwszej selekcji', t2:'Tomek w drugiej selekcji'};
+  const names = checked.map(input => stages[input.value] || input.labels[0].textContent);
+  const who = names.length === 1 ? names[0] : 'ani ' + names.join(', ani ');
+  return 'Z tego zestawu zostają zdjęcia, których nie wybrał ' + who + '.';
+}
+function syncGroupPanel(panel, describe) {
   const checked = [...$(panel + '-choices').querySelectorAll('input:checked')];
   const summary = $(panel + '-summary');
-  const names = checked.map(input => input.labels[0].textContent);
-  summary.textContent = names.length ? names.join(separator) : summary.dataset.hint;
+  summary.textContent = checked.length ? describe(checked) : summary.dataset.hint;
   $(panel + '-clear').hidden = !checked.length;
   return checked.map(input => input.value);
 }
@@ -265,8 +270,8 @@ function makeCard(photo) {
 }
 function showGrid() {
   const query = $('search').value.trim().toLocaleLowerCase('pl');
-  const common = syncGroupPanel('common',' + ');
-  const excluded = syncGroupPanel('exclude',' lub ');
+  const common = syncGroupPanel('common',checked => checked.map(input => input.labels[0].textContent).join(' + '));
+  const excluded = syncGroupPanel('exclude',reviewSummary);
   const required = activeFilter === 'all' ? common : [activeFilter];
   visible = photos.filter(photo => {
     return required.every(id => pickedBy(photo,id))
@@ -286,8 +291,8 @@ function showGrid() {
   $('empty-hint').textContent = activeFilter === 'm' && !selected.size ? 'Kliknij plus pod zdjęciem, aby dodać je do selekcji Mieszka.' : 'Zmień filtr lub wpisz inny numer.';
   $('empty-title').textContent = common.length > 1 && !query ? 'Brak wspólnych zdjęć.' : 'Brak zdjęć w tym widoku.';
   if (excluded.length && !query) {
-    $('empty-title').textContent = 'Brak zdjęć dla tych filtrów.';
-    $('empty-hint').textContent = 'Odznacz osobę w sekcji „Pomiń wybrane przez” lub zmień selekcję powyżej.';
+    $('empty-title').textContent = 'Przy tych ustawieniach nie ma zdjęć do przejrzenia.';
+    $('empty-hint').textContent = 'Zmień zestaw zdjęć u góry lub odznacz osobę w sekcji „Jeszcze do przejrzenia”.';
   } else if (common.length && !query) {
     $('empty-hint').textContent = common.includes('m') && !selected.size
       ? 'Dodaj zdjęcia do selekcji Mieszka, aby porównać swój wybór.'
