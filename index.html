@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#f6f4eb">
+  <title>Stykówka — ZGRYWA</title>
+  <link rel="icon" href="./zgrywa.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+<svg class="symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></symbol>
+  <symbol id="icon-right" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></symbol>
+  <symbol id="icon-left" viewBox="0 0 24 24"><path d="M20 12H5m6 6-6-6 6-6"/></symbol>
+  <symbol id="icon-down" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/></symbol>
+  <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 5 5"/></symbol>
+  <symbol id="icon-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
+  <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></symbol>
+  <symbol id="icon-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
+  <symbol id="icon-coarse" viewBox="0 0 24 24"><path d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm10 0h6v6h-6z"/></symbol>
+  <symbol id="icon-fine" viewBox="0 0 24 24"><path d="M3 3h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4zM3 10h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4zM3 17h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4z"/></symbol>
+</svg>
+<header class="mast">
+  <div class="brand" aria-label="ZGRYWA"><img src="./zgrywa.svg" alt="ZGRYWA"></div>
+  <span class="mast-divider"></span><span class="mast-name">Stykówka</span>
+  <span class="mast-right" id="private-label"><svg class="icon"><use href="#icon-lock"/></svg> Galeria prywatna</span>
+  <button class="mast-right plain" id="lock-btn" hidden><svg class="icon"><use href="#icon-lock"/></svg> Zablokuj</button>
+</header>
+<main id="gate">
+  <div class="cover-wrap" aria-hidden="true">
+    <div class="folder">
+      <div class="cover-lines"></div>
+      <div class="folder-main"><span class="cover-credit">Fotografie<br><b>Tomek Albin</b></span>
+      <div class="cover-title">Sesja<br><em>zespołu.</em></div></div>
+      <div class="folder-foot"><span>Stykówka fotograficzna</span><img src="./zgrywa.svg" alt=""></div>
+    </div>
+  </div>
+  <section class="signin">
+    <h1>Otwórz <br><em>stykówkę.</em></h1>
+    <p>Zdjęcia zespołu ZGRYWA<br> Fotografie Tomka Albina</p>
+    <form id="login">
+      <label for="password">Hasło do galerii</label>
+      <div class="password-field"><svg class="icon"><use href="#icon-lock"/></svg><input type="password" id="password" autocomplete="current-password" required></div>
+      <button class="primary" id="unlock" type="submit">Otwórz galerię <svg class="icon"><use href="#icon-right"/></svg></button>
+      <div class="message" id="login-msg" role="status"></div>
+    </form>
+  </section>
+</main>
+<main id="gallery" hidden>
+  <section class="intro">
+    <div><h1 id="gallery-title" tabindex="-1">Sesja <em>zespołu.</em></h1><p>Fotografie <strong>Tomek Albin</strong><span class="dotsep">·</span><span id="total"></span></p></div>
+    <div class="export-wrap"><button class="outline" id="export" disabled><svg class="icon"><use href="#icon-down"/></svg> Pobierz selekcję Mieszka <span class="export-n">0</span></button><small>Zapis wyboru w tej przeglądarce · eksport TXT</small></div>
+  </section>
+  <section class="tools" aria-label="Narzędzia stykówki">
+    <div id="filters" role="group" aria-label="Filtruj według selekcji"></div>
+    <div class="tool-row"><label class="search"><svg class="icon"><use href="#icon-search"/></svg><input type="search" id="search" aria-label="Szukaj po numerze lub nazwie" placeholder="Numer lub nazwa zdjęcia"></label>
+      <span id="n-visible" role="status"></span>
+      <div class="density" role="group" aria-label="Rozmiar miniaturek"><button id="coarse-btn" title="Większe miniatury" aria-label="Większe miniatury" aria-pressed="true"><svg class="icon"><use href="#icon-coarse"/></svg></button><button id="fine-btn" title="Mniejsze miniatury" aria-label="Mniejsze miniatury" aria-pressed="false"><svg class="icon"><use href="#icon-fine"/></svg></button></div>
+    </div>
+  </section>
+  <section id="grid" aria-label="Zdjęcia"></section>
+  <div id="empty" hidden><h2>Brak zdjęć w tym widoku.</h2><p id="empty-hint"></p><button class="outline" id="reset">Pokaż wszystkie zdjęcia</button></div>
+  <footer><span>Fotografie · Tomek Albin</span><button id="top" class="plain">Na górę ↑</button></footer>
+</main>
+<dialog id="viewer" aria-labelledby="view-name">
+  <div class="view-shell">
+    <header class="view-head"><div><b id="view-label"></b><span id="view-name"></span></div><button id="close-view" class="round" aria-label="Zamknij podgląd" title="Zamknij (Esc)"><svg class="icon"><use href="#icon-close"/></svg></button></header>
+    <div id="stage"><img id="large" alt=""><span id="view-msg" role="status"></span></div>
+    <div class="view-foot"><div id="view-tags" class="tags"></div><div class="view-actions"><button id="view-pick" class="pick-wide"></button><div class="arrows"><button id="prev" class="round" title="Poprzednie (←)" aria-label="Poprzednie zdjęcie"><svg class="icon"><use href="#icon-left"/></svg></button><span id="position"></span><button id="next" class="round" title="Następne (→)" aria-label="Następne zdjęcie"><svg class="icon"><use href="#icon-right"/></svg></button></div></div></div>
+  </div>
+</dialog>
+<template id="card"><article class="frame"><button class="photo" type="button"><img alt="" decoding="async"></button><div class="caption"><div><b class="frame-no"></b><div class="filename"></div></div><button class="pick" type="button"></button></div><div class="tags"></div></article></template>
+<div id="notice" role="status"></div>
+<noscript>Do odszyfrowania zdjęć włącz JavaScript w przeglądarce.</noscript>
+</body></html>
