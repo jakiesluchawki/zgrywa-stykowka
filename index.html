@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#f6f4eb">
   <title>Stykówka — ZGRYWA</title>
   <link rel="icon" href="./zgrywa.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css?v=2">
-  <script src="./app.js?v=2" defer></script>
+  <link rel="stylesheet" href="./style.css?v=3">
+  <script src="./app.js?v=3" defer></script>
 </head>
 <body>
 <svg class="symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -58,10 +58,17 @@
   <section class="tools" aria-label="Narzędzia stykówki">
     <div id="filters" role="group" aria-label="Filtruj według selekcji"></div>
     <details id="common-panel" class="common-panel">
-      <summary><strong>Wspólne wybory</strong><span id="common-summary">Zdjęcia wybrane przez wszystkie zaznaczone osoby</span></summary>
+      <summary><strong>Wspólne wybory</strong><span id="common-summary" data-hint="Zdjęcia wybrane przez wszystkie zaznaczone osoby"></span></summary>
       <form id="common-form" aria-label="Wspólne wybory">
         <div id="common-choices" role="group" aria-label="Porównaj selekcje"></div>
         <button type="button" class="common-clear" id="common-clear" hidden>Wyczyść filtr</button>
+      </form>
+    </details>
+    <details id="exclude-panel" class="common-panel">
+      <summary><strong>Pomiń wybrane przez</strong><span id="exclude-summary" data-hint="Ukryj kadr, jeśli wybrała go choć jedna z zaznaczonych osób"></span></summary>
+      <form id="exclude-form" aria-label="Pomiń wybrane przez">
+        <div id="exclude-choices" role="group" aria-label="Czyje wybory pominąć"></div>
+        <button type="button" class="common-clear" id="exclude-clear" hidden>Wyczyść wykluczenia</button>
       </form>
     </details>
     <div class="tool-row"><label class="search"><svg class="icon"><use href="#icon-search"/></svg><input type="search" id="search" aria-label="Szukaj po numerze lub nazwie" placeholder="Numer lub nazwa zdjęcia"></label>

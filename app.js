@@ -87,10 +87,19 @@ function displayTags(container, photo) {
   if (selected.has(photo.thumb)) tags.push(chip('m','Mieszko'));
   container.replaceChildren(...tags);
 }
+function groupChoice(definition) {
+  const label = document.createElement('label');
+  label.className = 'common-choice ' + definition.id;
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.name = 'group';
+  checkbox.value = definition.id;
+  label.append(checkbox,definition.id === 'm' ? 'Mieszko' : definition.label);
+  return label;
+}
 function buildFilters() {
   const definitions = [{id:'all',label:'Wszystkie'}, ...groups, {id:'m',label:'Selekcja Mieszka'}];
   const fragment = document.createDocumentFragment();
-  const choices = document.createDocumentFragment();
   for (const def of definitions) {
     const button = document.createElement('button');
     button.className = 'filter ' + def.id;
@@ -107,23 +116,29 @@ function buildFilters() {
     };
     filters.set(def.id,button);
     fragment.append(button);
-    if (def.id !== 'all') {
-      const label = document.createElement('label');
-      label.className = 'common-choice ' + def.id;
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.name = 'group';
-      checkbox.value = def.id;
-      label.append(checkbox,def.id === 'm' ? 'Mieszko' : def.label);
-      choices.append(label);
-    }
   }
   $('filters').replaceChildren(fragment);
-  $('common-choices').replaceChildren(choices);
-  $('common-panel').open = window.matchMedia('(min-width: 761px)').matches;
+  const people = definitions.filter(definition => definition.id !== 'all');
+  for (const panel of ['common','exclude']) {
+    $(panel + '-choices').replaceChildren(...people.map(groupChoice));
+    $(panel + '-panel').open = window.matchMedia('(min-width: 761px)').matches;
+    $(panel + '-clear').onclick = () => {
+      $(panel + '-form').reset();
+      showGrid();
+      $(panel + '-choices').querySelector('input').focus({preventScroll:true});
+    };
+  }
 }
-function commonGroups() {
-  return new FormData($('common-form')).getAll('group');
+function syncGroupPanel(panel, separator) {
+  const checked = [...$(panel + '-choices').querySelectorAll('input:checked')];
+  const summary = $(panel + '-summary');
+  const names = checked.map(input => input.labels[0].textContent);
+  summary.textContent = names.length ? names.join(separator) : summary.dataset.hint;
+  $(panel + '-clear').hidden = !checked.length;
+  return checked.map(input => input.value);
+}
+function filtersOnMyPicks() {
+  return activeFilter === 'm' || document.querySelector('.common-panel input[value="m"]:checked') !== null;
 }
 function pickedBy(photo, id) {
   return id === 'm' ? selected.has(photo.thumb) : photo.picks.includes(id);
@@ -132,11 +147,7 @@ $('common-form').onchange = () => {
   activeFilter = 'all';
   showGrid();
 };
-$('common-clear').onclick = () => {
-  $('common-form').reset();
-  showGrid();
-  $('common-choices').querySelector('input').focus({preventScroll:true});
-};
+$('exclude-form').onchange = showGrid;
 function syncCounters() {
   filters.get('m').querySelector('small').textContent = selected.size;
   $('export').disabled = !selected.size;
@@ -167,7 +178,7 @@ function toggle(photo) {
   else selected.add(photo.thumb);
   try {localStorage.setItem(selectionKey, JSON.stringify([...selected]));}
   catch {notify('Wybór jest w pamięci tej karty. Pobierz TXT przed zamknięciem.');}
-  if (activeFilter === 'm' || commonGroups().includes('m')) {
+  if (filtersOnMyPicks()) {
     showGrid();
     if (current && !visible.includes(current)) {
       if (visible.length) openPhoto(visible[Math.min(Math.max(0,before),visible.length-1)]);
@@ -183,7 +194,7 @@ window.addEventListener('storage', event => {
   if (!key || (event.key !== selectionKey && event.key !== null)) return;
   const idx = visible.indexOf(current);
   try {selected = readSelection();} catch {return;}
-  if (activeFilter === 'm' || commonGroups().includes('m')) {
+  if (filtersOnMyPicks()) {
     showGrid();
     if (current && !visible.includes(current)) {
       if (visible.length) openPhoto(visible[Math.min(Math.max(0,idx),visible.length-1)]);
@@ -254,16 +265,15 @@ function makeCard(photo) {
 }
 function showGrid() {
   const query = $('search').value.trim().toLocaleLowerCase('pl');
-  const common = commonGroups();
+  const common = syncGroupPanel('common',' + ');
+  const excluded = syncGroupPanel('exclude',' lub ');
   const required = activeFilter === 'all' ? common : [activeFilter];
   visible = photos.filter(photo => {
-    const matches = required.every(id => pickedBy(photo,id));
-    return matches && (!query || photo.name.toLocaleLowerCase('pl').includes(query));
+    return required.every(id => pickedBy(photo,id))
+      && !excluded.some(id => pickedBy(photo,id))
+      && (!query || photo.name.toLocaleLowerCase('pl').includes(query));
   });
   for (const [id,button] of filters) button.setAttribute('aria-pressed',String(!common.length && id === activeFilter));
-  $('common-clear').hidden = !common.length;
-  const names = [...$('common-choices').querySelectorAll('input:checked')].map(input => input.labels[0].textContent);
-  $('common-summary').textContent = names.length ? names.join(' + ') : 'Zdjęcia wybrane przez wszystkie zaznaczone osoby';
   observer.disconnect();
   thumbQueue.clear();
   for (const img of thumbStates.keys()) releaseThumb(img);
@@ -275,7 +285,10 @@ function showGrid() {
   $('empty').hidden = !!visible.length;
   $('empty-hint').textContent = activeFilter === 'm' && !selected.size ? 'Kliknij plus pod zdjęciem, aby dodać je do selekcji Mieszka.' : 'Zmień filtr lub wpisz inny numer.';
   $('empty-title').textContent = common.length > 1 && !query ? 'Brak wspólnych zdjęć.' : 'Brak zdjęć w tym widoku.';
-  if (common.length && !query) {
+  if (excluded.length && !query) {
+    $('empty-title').textContent = 'Brak zdjęć dla tych filtrów.';
+    $('empty-hint').textContent = 'Odznacz osobę w sekcji „Pomiń wybrane przez” lub zmień selekcję powyżej.';
+  } else if (common.length && !query) {
     $('empty-hint').textContent = common.includes('m') && !selected.size
       ? 'Dodaj zdjęcia do selekcji Mieszka, aby porównać swój wybór.'
       : 'Odznacz jedną z selekcji, aby poszerzyć wyniki.';
@@ -291,6 +304,7 @@ $('grid').addEventListener('click', event => {
 $('search').oninput = showGrid;
 $('reset').onclick = () => {
   $('common-form').reset();
+  $('exclude-form').reset();
   activeFilter = 'all';
   $('search').value = '';
   showGrid();

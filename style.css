@@ -14,6 +14,7 @@
   border-block: 1px solid var(--line);
   margin: 1px 0 6px;
 }
+.common-panel + .common-panel { border-top: 0; }
 .common-panel summary {
   display: flex;
   align-items: baseline;
@@ -36,9 +37,9 @@
 .common-panel[open] summary::before { transform: translateY(-2px) rotate(45deg); }
 .common-panel summary:focus-visible { outline: 2px solid var(--violet); outline-offset: -2px; }
 .common-panel summary strong { font-size: 14px; font-weight: 600; white-space: nowrap; }
-#common-summary { color: var(--quiet); font-size: 12px; }
-#common-form, #common-choices { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
-#common-form { margin: 0 0 11px 18px; }
+.common-panel summary span { color: var(--quiet); font-size: 12px; }
+.common-panel form, .common-panel [role="group"] { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.common-panel form { margin: 0 0 11px 18px; }
 .common-choice {
   display: inline-flex;
   align-items: center;
@@ -56,7 +57,10 @@
 .common-clear { padding: 6px 8px; color: var(--quiet); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 760px) {
   .common-panel summary { align-items: center; }
-  #common-summary { font-size: 11px; line-height: 1.2; }
-  #common-form { margin-left: 0; }
+  .common-panel summary span { font-size: 11px; line-height: 1.2; }
+  .common-panel form { margin-left: 0; }
   .common-choice { min-height: 32px; }
+}
+@media (max-height: 540px) {
+  .tools { position: static; }
 }
